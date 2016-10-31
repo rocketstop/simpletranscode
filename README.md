@@ -32,10 +32,12 @@ Lightly tested
 Currently, the two log files that this script produces will always be written.
 
 ## TODO:
-Edit to produce a 'quiet' option with no log output.
+Edit to produce a 'verbose' option for log output, with default set as no logging.
 
-Configuration file.
+Create a configuration file for paths.
 
 Add a few different options for transcode quality.
 
-Better logging and error messages
+Better logging and error messages.
+
+Workflow/Queue/Throttle? (If multiple recordings finish simultaneously).
