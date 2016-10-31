@@ -25,7 +25,7 @@ def parse_arguments():
         nargs=1,
         dest='filename',
         default=None,
-        help='Path and filename of file containing matrix to be printed.'
+        help='Path and filename of file to be transcoded.'
     )
 
     arguments = parser.parse_args()
