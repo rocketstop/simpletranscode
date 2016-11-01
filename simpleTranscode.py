@@ -10,6 +10,7 @@ import ConfigParser
 
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 
+
 def parse_arguments():
 
     parser = argparse.ArgumentParser(
@@ -77,7 +78,7 @@ def main(config):
             output_filename = video_name + ".mkv"
             dest_video = os.path.join(original_video_dir, output_filename)
             logging.info('Starting run on: %s' % video_path)
-            logging.info('Source video size: %s' % os.path.getsize(video_path))
+            logging.info('Source size: %s' % os.path.getsize(video_path))
             logging.info('Writing to: %s' % dest_video)
 
             FFMPEG_PATH = config.get('Dependencies', 'ffmpeg-path')
@@ -97,7 +98,7 @@ def main(config):
                                 dest_video]
             logging.info('Transcode command: %s' % cmd)
             subprocess.call(cmd)
-            logging.info('Transcode complete, size: %s' % os.path.getsize(dest_video))
+            logging.info('Transcode size: %s' % os.path.getsize(dest_video))
             cleanup_and_exit(dest_video, video_path)
             sys.exit(0)
 
