@@ -6,11 +6,9 @@ import uuid
 import logging
 import argparse
 import subprocess
+import ConfigParser
 
-FFMPEG_PATH = '/usr/bin/ffmpeg'
-LOG_PATH = os.path.dirname(os.path.realpath(__file__))
-LOG_FILENAME = "transcode.log"
-
+BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 def parse_arguments():
 
@@ -32,11 +30,26 @@ def parse_arguments():
     return arguments
 
 
-def initLogging():
-    session_uuid = str(uuid.uuid4())
-    fmt = '%%(asctime)-15s [%s] %%(message)s' % session_uuid[:6]
-    logging.basicConfig(level=logging.INFO, format=fmt,
-                        filename=os.path.join(LOG_PATH, LOG_FILENAME))
+def initConfig():
+    config_filepath = os.path.join(BASE_PATH, 'simpletranscode.conf')
+
+    if not os.path.exists(config_filepath):
+        print 'Config file not found: %s' % config_filepath
+        sys.exit(1)
+    config = ConfigParser.SafeConfigParser()
+    config.read(config_filepath)
+    return config
+
+
+def initLogging(config):
+
+    fmt = '%%(asctime)s [%s] %%(message)s' % str(uuid.uuid4())[:6]
+    logfile = os.path.join(BASE_PATH, config.get('Logging', 'log-filename'))
+
+    logging.basicConfig(level=logging.INFO,
+                        format=fmt,
+                        filename=logfile)
+
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
     formatter = logging.Formatter('%(message)s')
@@ -52,8 +65,7 @@ def cleanup_and_exit(dest_video, video_path):
     logging.info('Completed processing.')
 
 
-def main():
-    initLogging()
+def main(config):
 
     if (os.path.exists(args.filename[0])):
         try:
@@ -67,6 +79,9 @@ def main():
             logging.info('Starting run on: %s' % video_path)
             logging.info('Writing to: %s' % dest_video)
 
+            FFMPEG_PATH = config.get('Dependencies', 'ffmpeg-path')
+            logging.info('Using ffmpeg path: %s' % FFMPEG_PATH)
+
         except Exception, e:
             logging.error('Problem getting working paths: %s' % e)
             sys.exit(1)
@@ -79,7 +94,7 @@ def main():
                                 '-c:a', 'ac3',
                                 '-b:a', '384k',
                                 dest_video]
-            logging.info('[ffmpeg] Command: %s' % cmd)
+            logging.info('Transcode command: %s' % cmd)
             subprocess.call(cmd)
             cleanup_and_exit(dest_video, video_path)
             sys.exit(0)
@@ -90,9 +105,13 @@ def main():
 
     else:
         logging.error('Unable to open filename, verify filename and path.')
+        logging.error('Expected filename: %s ' % args.filename[0])
         sys.exit(1)
 
 
 if __name__ == '__main__':
+    config = initConfig()
     args = parse_arguments()
-    main()
+    initLogging(config)
+
+    main(config)

@@ -1,0 +1,12 @@
+[Dependencies]
+
+# Path to ffmpeg
+ffmpeg-path: /usr/bin/ffmpeg
+
+[Logging]
+
+# Log file name
+log-filename: transcode.log
+
+# Enable logging
+log-enable: True

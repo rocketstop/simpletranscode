@@ -3,3 +3,4 @@ transcode.log
 lastRunLog.log
 *.mkv
 *.ts
+simpletranscode.conf
