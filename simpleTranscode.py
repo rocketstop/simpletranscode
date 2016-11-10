@@ -3,6 +3,7 @@
 import os
 import sys
 import uuid
+import shutil
 import logging
 import argparse
 import subprocess
@@ -60,9 +61,10 @@ def initLogging(config):
 
 def cleanup_and_exit(dest_video, video_path):
     if (os.path.exists(dest_video)):
-        logging.info("Removing original: %s" % video_path)
+        logging.info("Copying new over original: %s" % video_path)
         if (os.path.exists(video_path)):
             os.remove(video_path)
+            shutil.copyfile(dest_video,video_path)
     logging.info('Completed processing.')
 
 
