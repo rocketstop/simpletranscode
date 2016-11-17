@@ -13,7 +13,10 @@ BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
 def parse_arguments():
-
+    """
+    Parse command line arguments for settings
+    :return arguments:
+    """
     parser = argparse.ArgumentParser(
         description='''
             Utility to transcode a given video file using a configured group of
@@ -32,7 +35,11 @@ def parse_arguments():
     return arguments
 
 
-def initConfig():
+def init_config():
+    """
+    Load configuration from config file
+    :return config:
+    """
     config_filepath = os.path.join(BASE_PATH, 'simpletranscode.conf')
 
     if not os.path.exists(config_filepath):
@@ -43,8 +50,11 @@ def initConfig():
     return config
 
 
-def initLogging(config):
-
+def init_logging(config):
+    """
+    Initialize basic logging functionality
+    :param config:
+    """
     fmt = '%%(asctime)s [%s] %%(message)s' % str(uuid.uuid4())[:6]
     logfile = os.path.join(BASE_PATH, config.get('Logging', 'log-filename'))
 
@@ -60,17 +70,23 @@ def initLogging(config):
 
 
 def cleanup_and_exit(dest_video, video_path):
+    """
+    Move files (if necessary) and exit
+    :param dest_video:
+    :param video_path:
+    """
     if (os.path.exists(dest_video)):
         logging.info("Copying new over original: %s" % video_path)
         if (os.path.exists(video_path)):
             os.remove(video_path)
-            shutil.copyfile(dest_video,video_path)
+            shutil.copyfile(dest_video, video_path)
+
     logging.info('Completed processing.')
 
 
 def main(config):
 
-    if (os.path.exists(args.filename[0])):
+    if os.path.exists(args.filename[0]):
         try:
             video_path = args.filename[0]
             original_video_dir = os.path.dirname(video_path)
@@ -115,8 +131,8 @@ def main(config):
 
 
 if __name__ == '__main__':
-    config = initConfig()
+    config = init_config()
     args = parse_arguments()
-    initLogging(config)
+    init_logging(config)
 
     main(config)
